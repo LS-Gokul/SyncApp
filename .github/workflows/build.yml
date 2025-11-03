@@ -1,0 +1,59 @@
+name: SonarQube
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: windows-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v6
+      # 2️⃣ Set up MSBuild (adds it to PATH)
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+      - name: Download Build Wrapper
+        run: |
+          Invoke-WebRequest -Uri "https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip" -OutFile "bw.zip"
+          Expand-Archive bw.zip -DestinationPath .
+      #- name: Download Advanced Installer
+      #  run: |
+      #   Invoke-WebRequest -Uri "https://www.advancedinstaller.com/downloading.html" -OutFile "advancedinstaller.msi"
+      #    Install advinst.msi -DestinationPath
+      # 6️⃣ Download and install Advanced Installer
+      - name: Download and Install Advanced Installer
+        run: |
+          echo "Downloading Advanced Installer..."
+          Invoke-WebRequest -Uri "https://www.advancedinstaller.com/downloads/21.8.2/advinst.msi" -OutFile "advinst.msi"
+          echo "Installing Advanced Installer silently..."
+          msiexec /i advinst.msi /qn /norestart
+        
+      - name: Build Advanced Installer Project
+        run: |
+          $aiPath = '"C:\Program Files (x86)\Caphyon\Advanced Installer 21.8.2\bin\x86\AdvancedInstaller.com"'
+          & {{$aiPath}} /rebuild "Setup\Setup.aip" -buildslist DefaultBuild -drop_content
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Installer
+          path: Setup\Output\**\*.msi
+          
+      - name: Run Build Wrapper
+        run: |
+          .\build-wrapper-win-x86\build-wrapper-win-x86-64.exe --out-dir bw-output msbuild LSSyncApp.sln /t:Restore,Rebuild /p:Configuration=Release
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            --define "sonar.cfamily.compile-commands=${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json"
