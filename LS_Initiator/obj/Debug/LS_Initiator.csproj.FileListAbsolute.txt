@@ -1,0 +1,11 @@
+C:\Git\LSSyncApp\OutputDirectory\LS_Initiator.exe.config
+C:\Git\LSSyncApp\OutputDirectory\LS_Initiator.exe
+C:\Git\LSSyncApp\OutputDirectory\LS_Initiator.pdb
+C:\Git\LSSyncApp\LS_Initiator\obj\Debug\LS_Initiator.csproj.AssemblyReference.cache
+C:\Git\LSSyncApp\LS_Initiator\obj\Debug\LS_Initiator.Initiator.resources
+C:\Git\LSSyncApp\LS_Initiator\obj\Debug\LS_Initiator.Properties.Resources.resources
+C:\Git\LSSyncApp\LS_Initiator\obj\Debug\LS_Initiator.csproj.GenerateResource.cache
+C:\Git\LSSyncApp\LS_Initiator\obj\Debug\LS_Initiator.csproj.CoreCompileInputs.cache
+C:\Git\LSSyncApp\LS_Initiator\obj\Debug\LS_Initiator.exe
+C:\Git\LSSyncApp\LS_Initiator\obj\Debug\LS_Initiator.pdb
+C:\Git\LSSyncApp\LS_Initiator\obj\Debug\LS_Initi.EF3BCFA4.Up2Date

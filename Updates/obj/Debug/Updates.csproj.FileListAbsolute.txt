@@ -1,0 +1,14 @@
+C:\Git\LSSyncApp\Updates\bin\Debug\Updates.exe.config
+C:\Git\LSSyncApp\Updates\bin\Debug\Updates.exe
+C:\Git\LSSyncApp\Updates\bin\Debug\Updates.pdb
+C:\Git\LSSyncApp\OutputDirectory\Updates.exe.config
+C:\Git\LSSyncApp\OutputDirectory\Updates.exe
+C:\Git\LSSyncApp\OutputDirectory\Updates.pdb
+C:\Git\LSSyncApp\Updates\obj\Debug\Updates.csproj.AssemblyReference.cache
+C:\Git\LSSyncApp\Updates\obj\Debug\Updates.Updates.resources
+C:\Git\LSSyncApp\Updates\obj\Debug\Updates.Properties.Resources.resources
+C:\Git\LSSyncApp\Updates\obj\Debug\Updates.csproj.GenerateResource.cache
+C:\Git\LSSyncApp\Updates\obj\Debug\Updates.csproj.CoreCompileInputs.cache
+C:\Git\LSSyncApp\Updates\obj\Debug\Updates.exe
+C:\Git\LSSyncApp\Updates\obj\Debug\Updates.pdb
+C:\Git\LSSyncApp\Updates\obj\Debug\Updates.csproj.Up2Date

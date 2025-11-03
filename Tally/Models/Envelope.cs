@@ -1,0 +1,148 @@
+﻿using System.Collections.Generic;
+using System.Xml.Serialization;
+
+namespace LSSyncApp.Tally.Models
+{
+    [XmlRoot(ElementName = "ENVELOPE")]
+    public class Envelope<T> : TallyXmlJson
+    {
+
+        [XmlElement(ElementName = "HEADER")]
+        public Header Header { get; set; }
+
+        [XmlElement(ElementName = "BODY")]
+        public Body<T> Body { get; set; }
+    }
+
+    [XmlRoot(ElementName = "BODY")]
+    public class Body<T>
+    {
+        [XmlElement(ElementName = "DESC")]
+        public Description Desc { get; set; }
+
+        [XmlElement(ElementName = "DATA")]
+        public Data<T> Data { get; set; }
+    }
+
+    [XmlRoot(ElementName = "DATA")]
+    public class Data<T>
+    {
+        [XmlElement(ElementName = "TALLYMESSAGE")]
+        public Message<T> Message { get; set; } = new Message<T>();
+
+        [XmlElement(ElementName = "COLLECTION")]
+        public Colllection<T> Collection { get; set; } = new Colllection<T>();
+
+    }
+
+    [XmlRoot(ElementName = "COLLECTION")]
+    public class Colllection<T>
+    {
+        public List<T> Objects { get; set; }
+    }
+
+    [XmlRoot(ElementName = "TALLYMESSAGE")]
+    public class Message<T>
+    {
+        public T Object { get; set; }
+    }
+
+
+    [XmlRoot(ElementName = "HEADER")]
+    public class Header
+    {
+        public Header(string Request, string Type, string ID)
+        {
+            this._request = Request;
+            this._type = Type;
+            this._Id = ID;
+            this._version = "1";
+        }
+
+        public Header(string Request)
+        {
+            this._request = Request;
+        }
+
+        public Header() { }
+        private string _version;
+        private string _request;
+        private string _type;
+        private string _Id;
+        [XmlElement(ElementName = "VERSION")]
+        public string Version { get { return _version; } set { _version = value; } }
+
+        [XmlElement(ElementName = "TALLYREQUEST")]
+        public string Request { get { return _request; } set { _request = value; } }
+
+        [XmlElement(ElementName = "TYPE")]
+        public string Type { get { return _type; } set { _type = value; } }
+
+        [XmlElement(ElementName = "ID")]
+        public string ID { get { return _Id; } set { _Id = value; } }
+    }
+
+
+    [XmlRoot(ElementName = "DESC")]
+    public class Description
+    {
+        [XmlElement(ElementName = "STATICVARIABLES")]
+        public StaticVariables staticVariables { get; set; } = new StaticVariables();
+
+    }
+
+    [XmlRoot(ElementName = "STATICVARIABLES")]
+    public class StaticVariables : TallyBaseObject
+    {
+        private string _ExportFormat;
+
+        public StaticVariables()
+        {
+
+        }
+
+        [XmlElement(ElementName = "SVEXPORTFORMAT")]
+        public string SVExportFormat { get { return _ExportFormat; } set { _ExportFormat = $"$$SysName:{value}"; } }
+
+        [XmlElement(ElementName = "SVCURRENTCOMPANY")]
+        public string SVCompany { get; set; }
+
+        [XmlIgnore]
+        public string SVFromDate { get { return SVFrom.Text; } set { SVFrom = new SVFrom(); SVFrom.Text = value; } }
+
+        [XmlElement(ElementName = "SVFROMDATE")]
+        public SVFrom SVFrom { get; set; }
+
+        [XmlIgnore]
+        public string SVToDate { get { return SVTo.Text; } set { SVTo = new SVTo(); SVTo.Text = value; } }
+
+        [XmlElement(ElementName = "SVTODATE")]
+        public SVTo SVTo { get; set; }
+
+        [XmlElement(ElementName = "SVViewName")]
+        public VoucherViewType ViewName { get; set; }
+
+        [XmlElement(ElementName = "EXPLODEFLAG")]
+        public string ExplodeFlag { get; set; }
+
+
+    }
+    [XmlRoot(ElementName = "SVFROMDATE")]
+    public class SVFrom
+    {
+        [XmlAttribute(AttributeName = "TYPE")]
+        public string Type { get; set; } = "Date";
+
+        [XmlText]
+        public string Text { get; set; }
+    }
+    [XmlRoot(ElementName = "SVTODATE")]
+    public class SVTo
+    {
+        [XmlAttribute(AttributeName = "TYPE")]
+        public string Type { get; set; } = "Date";
+
+        [XmlText]
+        public string Text { get; set; }
+    }
+}

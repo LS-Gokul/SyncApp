@@ -1,0 +1,291 @@
+[Collection: LS_Company]  
+Type: Company  
+IsODBCTable: Yes  
+Fetch : *
+
+[Collection: LS_Groups]  
+Type: Group  
+IsODBCTable: Yes  
+Fetch : *
+
+[Collection: LS_Ledger]  
+Type: Ledger  
+IsODBCTable: Yes  
+Fetch : *
+
+[Collection: LS_StockItem]  
+Type: StockItem  
+IsODBCTable: Yes  
+Fetch : *
+
+[Collection: LS_VoucherType]  
+Type: VoucherType  
+IsODBCTable: Yes  
+Fetch : *
+
+[Collection: LS_AllVouchers]  
+Type: Voucher  
+IsODBCTable: Yes  
+Fetch : *, AllLedgerEntries.*, LedgerEntries.*
+
+
+
+[Collection: LS_Outstanding_ALL]
+Type            : Bills
+Is ODBC Table   : YEs
+Fetch           : Name, BillDate, Parent, ClosingBalance, IsReceivable, IsPayable
+
+
+
+[Collection: VouchersCollection]
+Type : Voucher
+IsODBCTable: Yes  
+[Collection : SummaryCollection]
+Source Collection : Vouchers Collection
+Walk              : Inventory Entries
+By                : PartyName : $PartyName
+By                : StockItemName : $StockItemName
+By		  : VouchertypeName : $VouchertypeName
+By		  : Guid            : $Guid
+By                : PartyLedgerName : $PartyLedgerName
+By                : VoucherTypeName : $VoucherTypeName
+By                : Reference : $Reference
+By                : VoucherNumber : $VoucherNumber
+By                : Date : $Date
+By		  : BatchName :$BatchName
+By                : vchentrymode : $vchentrymode
+By                : Iscancelled : $Iscancelled
+By                : LedgerName : $LedgerName
+By                : PersistedView : $PersistedView
+By                : AsOriginal: $AsOriginal
+By                : IsOptional : $IsOptional
+By                : IsOnHold : $IsOnHold
+By                : IsPostDated : $IsPostDated
+By                : HasCashFlow : $HasCashFlow
+By                : CostCentreName : $CostCentreName
+By                : IsCostCentre : $IsCostCentre
+Aggr Compute      : BilledQty : Sum : $BilledQty
+Aggr Compute      : Discount : Sum : $Discount
+Aggr Compute      : Amount : Sum : $Amount
+
+
+
+[Collection: LedgerCollection]
+Type : Voucher
+IsODBCTable: Yes
+[Collection : LedgerSummaryCollection]
+Source Collection : Vouchers Collection
+Walk              : Ledger Entries
+By                : PartyName : $PartyName
+By		  : VouchertypeName : $VouchertypeName
+By		  : Guid            : $Guid
+By                : PartyLedgerName : $PartyLedgerName
+By                : LedgerName : $LedgerName
+By                : VoucherTypeName : $VoucherTypeName
+By                : Reference : $Reference
+By                : VoucherNumber : $VoucherNumber
+By                : Date : $Date
+By                : Iscancelled : $Iscancelled
+By                : PersistedView : $PersistedView
+By                : Narration : $Narration
+By                : AsOriginal: $AsOriginal
+By                : IsOptional : $IsOptional
+By                : IsOnHold : $IsOnHold
+By                : IsPostDated : $IsPostDated
+By                : HasCashFlow : $HasCashFlow
+By                : CostCentreName : $CostCentreName
+By                : IsCostCentre : $IsCostCentre
+Aggr Compute      : Amount : Sum : $Amount
+
+
+;;=======================================================================================
+
+[#Part: EINrmlDetails]
+	Add : Part  : After : EI Info	: EIVLH_VchHistory
+
+[Part	: EIVLH_VchHistory]
+	Invisible	: Yes
+	Line		: FormSubtitle, LnEIVLH_VchHistoryDtls
+	Local		: Field : Form SubTitle : Info : "Voucher History" 
+
+	Repeat		: LnEIVLH_VchHistoryDtls : EIVLHAggr_VchHistory
+	Scroll		: Vertical
+	Break On	: $$IsEmpty:$LS_User
+
+
+	[Line	: LnEIVLH_VchHistoryDtls]
+		Field	: FldLS_Vch_Status, FldLS_User, FldLS_Created_Modified_Date, FldLS_Modified_Time, FldLS_Vch_Amount
+					
+					Use 	: Name Field
+					
+		Local	: Field : Default : Width : 10% Screen
+
+		[Field	: FldLS_User]
+			Use		: Name Field
+			Storage		: LS_User
+			Skip		: Yes
+
+		[Field	: FldLS_Created_Modified_Date]
+			Use			: Short Date Field
+			Storage		: LS_Created_Modified_Date
+			Skip		: Yes
+
+		[Field	: FldLS_Modified_Time]
+			Use			: Short Name Field
+			storage		: LS_Modified_Time
+			Skip		: Yes
+			Align		: Right
+
+		[Field	: FldLS_Vch_Status]
+			Use			: Name Field
+			Storage		: LS_Vch_Status
+			Skip		: Yes
+
+		[Field	: FldLS_Vch_Amount]
+			Use			: Amount Forex Field
+			Storage		: LS_Vch_Amount
+			Skip		: Yes
+
+
+
+[#Part: DBLLINE Narration]
+
+
+		[line: VCHAlterationLine]
+			
+		fields	: FldLS_Vch_Status, FldLS_User, FldLS_Created_Modified_Date, FldLS_Modified_Time, FldLS_Vch_Amount
+		local	: field	: default				: skip		: no
+		local	: field	: FldLS_Vch_Status	: set as	: If $$InCreateMode Then "Created" Else If $$InAlterMode Then "Altered" Else "A_M_C"
+		local	: field	: FldLS_User	: set as	: ##SVUserName 
+		local	: field	: FldLS_Created_Modified_Date	: set as	: $$MachineDate
+		local	: field	: FldLS_Modified_Time	: set as	: $$String:$$MachineTime
+		local	: field	: FldLS_Vch_Amount	: set as	: $Amount
+
+
+		
+[System	: UDF]
+	EIVLHAggr_VchHistory		: Aggregate : 2002
+	LS_User		: String	: 2003
+	LS_Created_Modified_Date		: Date		: 2004
+	LS_Vch_Status 		: String	: 2005
+	LS_Vch_Amount			: Amount	: 2006
+	LS_Modified_Time		: String	: 2007
+
+
+[#Form: Accounting Voucher]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+	
+[#Form: Payment Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Receipt Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Sales Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Credit Note Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Debit Note Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Delivery Note Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Journal Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Payroll Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+
+[#Form: Receipt Note Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Stock Journal Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Contra Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Reversing Journal Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Sales Order Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+[#Form: Physical Stock Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+
+
+[#Form: Purchase Color]
+
+	Add	: On: At Beginning	: Form Accept: Yes : Call	: Fun_AppendUser1
+	Add	: On: At Beginning	: Form Cancel: Yes : Call	: Fun_AppendUser2
+	Add	: On: At Beginning	: QUERYBOX 	: "Cancel ?" : Yes:No: IF	: $$LastResult : Call	: Fun_AppendUser2
+
+
+
+[Function: Fun_AppendUser1]
+	
+	00 	: INSERT COLLECTION OBJECT	: EIVLHAggr_VchHistory
+	10 	: 	SET VALUE	: LS_User 	: ##SVUserName
+	20 	: 	SET VALUE	: LS_Created_Modified_Date 	: $$MachineDate
+	30 	: 	SET VALUE	: LS_Modified_Time 	: $$MachineTime
+	40 	: 	SET VALUE	: LS_Vch_Status : If $$InCreateMode Then "Created" Else If $$InAlterMode Then "Altered" Else "A_M_C"
+	50 	: 	SET VALUE	: LS_Vch_Amount	: $Amount
+
+
+
+[Function: Fun_AppendUser2]
+	
+	00 	: INSERT COLLECTION OBJECT	: EIVLHAggr_VchHistory
+	10 	: 	SET VALUE	: LS_User 	: ##SVUserName
+	20 	: 	SET VALUE	: LS_Created_Modified_Date 	: $$MachineDate
+	30 	: 	SET VALUE	: LS_Modified_Time 	: $$MachineTime
+	40 	: 	SET VALUE	: LS_Vch_Status : "Cancelled"
+	50 	: 	SET VALUE	: LS_Vch_Amount	: $Amount
+
+
+
+;;=============================================================================================
+;;If $$InCreateMode Then "Created" Else If $$InAlterMode Then "Altered" Else ""
+;;If $$InCreateMode then "Created" Else "Altered"   
+;;If $$InCreateMode Then "Created" Else If $$InAlterMode Then "Altered" Else If $$CanCancel Then "Cancelled" Else ""
+;;	40 	: 	SET VALUE	: LS_Vch_Status : If $$InCreateMode Then "Created" Else If $$InAlterMode Then "Altered" Else If $IsCancelled Then "Cancelled" Else ""
+;;50 	: 	SET VALUE	: LS_Vch_Amount	: $Amount
+;;		Remove if : $$Line<>$$NumItems:EIVLHAggr_VchHistory
+
+
+[Collection	: CollDB_AllVch]
+	Type	: Voucher
+	Fetch	: VoucherNumber, VoucherTypeName
+IsODBCTable: Yes
+
+[Collection	: CollDB_VchHistory]
+	Source Collection	: CollDB_AllVch ;Default ;.
+	Walk			: EIVLHAggr_VchHistory ;: Voucher ;
+	Child Of: $Name ;;$$Name
+	Fetch	: Date, VoucherNumber, VoucherTypeName, LS_Vch_Amount, LS_Created_Modified_Date, LS_User, LS_Vch_Status, LS_Modified_Time, Iscancelled
+
+
+[System	: Formula]
+
+;;=============================================================================================
+

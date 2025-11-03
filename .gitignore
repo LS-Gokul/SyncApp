@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/bin/Debug/Log/20210311
+/bin/Debug/Log/20210407
+/bin/Debug/Log/20210423
+/bin/Debug/Log/20210715
+/bin/Debug/Log/20210716
+/bin/Debug/Log/20210930
+/OutputDirectory/Log
+/.vs/LSSyncApp/FileContentIndex
