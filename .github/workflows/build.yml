@@ -32,7 +32,7 @@ jobs:
       - name: Download and Install Advanced Installer
         run: |
           echo "Downloading Advanced Installer..."
-          Invoke-WebRequest -Uri "https://www.advancedinstaller.com/downloads/21.8.2/advinst.msi" -OutFile "advinst.msi"
+          Invoke-WebRequest -Uri "https://www.advancedinstaller.com/downloads/23.2/advinst.msi" -OutFile "advinst.msi"
           echo "Installing Advanced Installer silently..."
           msiexec /i advinst.msi /qn /norestart
         
