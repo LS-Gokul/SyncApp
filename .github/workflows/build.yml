@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Installer
-          path: Setup\Output\**\*.msi
+          path: Setup\*.msi
           
       - name: Run Build Wrapper
         run: |
